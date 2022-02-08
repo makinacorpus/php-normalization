@@ -10,7 +10,7 @@ to business domain names.
 
 This provides three different class naming strategies:
 
- - *Passthrough* name conversion which doesn't convert anything. exposed names
+ - *Passthrough* name conversion which doesn't convert anything. Exposed names
    are your PHP class names.
 
  - *Prefix based* name conversion which will convert a string such as
@@ -19,6 +19,9 @@ This provides three different class naming strategies:
    statically converted to `FooShop` and replacing separators using `.`.
 
  - *Static map* name conversion which uses a user-provided static map.
+
+ - And of course, you may implement your own strategies using the
+   `MakinaCorpus\Normalization\NameMappingStrategy` interface.
 
 You can configure the name map to hold an infinite number of strategies,
 each one identified by a *tag*, which permits to each service using this
@@ -183,8 +186,6 @@ namespace App\Infra\Bus;
 
 use MakinaCorpus\Normalization\NameMap\NameMapAware;
 use MakinaCorpus\Normalization\NameMap\NameMapAwareTrait;
-use MakinaCorpus\Normalization\Serializer;
-use SomeVendor\SomePackage\MessageBroker;
 
 class SomeBus implements NameMapAware
 {
