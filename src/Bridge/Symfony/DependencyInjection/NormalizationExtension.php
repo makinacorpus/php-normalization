@@ -25,7 +25,7 @@ final class NormalizationExtension extends Extension
         $loader = new YamlFileLoader($container, new FileLocator(\dirname(__DIR__).'/Resources/config'));
 
         $loader->load('normalization.yaml');
-        $this->processNormalization($container, $config['normalization'] ?? []);
+        $this->processNormalization($container, $config);
 
         if (\interface_exists(UuidInterface::class)) {
             $loader->load('normalization.ramsey_uuid.yaml');
@@ -67,7 +67,7 @@ final class NormalizationExtension extends Extension
         ]);
 
         foreach (($config['strategy'] ?? []) as $tag => $serviceId) {
-            $container->getDefinition('normalization.normalization.name_map')->addMethodCall('setNameMapping', [new Reference($serviceId), $tag]);
+            $container->getDefinition('normalization.name_map')->addMethodCall('setNameMappingStrategy', [new Reference($serviceId), $tag]);
         }
         foreach (($config['static'] ?? []) as $tag => $data) {
             $this->processNormalizationStaticForContext($container, $tag, $data['map'] ?? [], $data['aliases'] ?? []);
