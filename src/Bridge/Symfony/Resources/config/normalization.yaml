@@ -1,0 +1,30 @@
+services:
+
+    normalization.serializer.default:
+        public: false
+        class: MakinaCorpus\Normalization\Bridge\Symfony\Serializer\SymfonySerializerSerializer
+        arguments: ["@?serializer"]
+
+    normalization.serializer:
+        alias: normalization.serializer.default
+
+    normalization.name_map.strategy.prefix:
+        public: false
+        class: MakinaCorpus\Normalization\NameMap\PrefixNameMappingStrategy
+        arguments: ['App', 'App'] # Filled later by extension.
+
+    normalization.name_map.strategy.default:
+        alias: normalization.name_map.strategy.prefix
+
+    normalization.name_map:
+        public: false
+        class: MakinaCorpus\Normalization\NameMap\DefaultNameMap
+        arguments: ['@normalization.name_map.strategy.default']
+
+    MakinaCorpus\Normalization\NameMap:
+        public: false
+        alias: normalization.name_map
+
+    MakinaCorpus\Normalization\Serializer:
+        public: false
+        alias: normalization.serializer

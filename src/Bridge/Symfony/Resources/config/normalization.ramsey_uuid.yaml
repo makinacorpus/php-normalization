@@ -1,0 +1,4 @@
+services:
+    MakinaCorpus\Normalization\Bridge\Symfony\Serializer\RamseyUuidNormalizer:
+        public: false
+        tags: ['serializer.normalizer']
