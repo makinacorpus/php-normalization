@@ -1,6 +1,6 @@
 # Normalization helpers
 
-Provide a few helpers for handling object and object name normalization.
+PHP class name to business domain name naming strategies and normalization helpers.
 
 Main feature is the *name map*, which provide a reversible and predictible
 *class name to business name* and a *business name to class name* conversion
