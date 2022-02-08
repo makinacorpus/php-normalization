@@ -26,7 +26,7 @@ final class SymfonySerializerSerializer implements Serializer
      */
     public function serialize($data, string $format, ?string $forceType = null): string
     {
-        return $this->symfonySerializer->serialize($data, MimeTypeConverter::formatToMimetype($format));
+        return $this->symfonySerializer->serialize($data, MimeTypeConverter::mimetypeToFormat($format));
     }
 
     /**
@@ -34,6 +34,6 @@ final class SymfonySerializerSerializer implements Serializer
      */
     public function unserialize(string $type, string $format, string $data)
     {
-        return $this->symfonySerializer->deserialize($data, $type, MimeTypeConverter::mimetypeToFormat($format));
+        return $this->symfonySerializer->deserialize($data, $type, MimeTypeConverter::formatToMimetype($format));
     }
 }
