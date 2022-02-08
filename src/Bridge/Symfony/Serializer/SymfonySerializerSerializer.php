@@ -34,6 +34,6 @@ final class SymfonySerializerSerializer implements Serializer
      */
     public function unserialize(string $type, string $format, string $data)
     {
-        return $this->symfonySerializer->deserialize($data, $type, MimeTypeConverter::formatToMimetype($format));
+        return $this->symfonySerializer->deserialize($data, $type, MimeTypeConverter::mimetypeToFormat($format));
     }
 }
