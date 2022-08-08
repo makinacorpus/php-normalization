@@ -33,11 +33,7 @@ class DefaultNameMap implements NameMap
      */
     public function toPhpType(string $name, string $tag = self::TAG_DEFAULT): string
     {
-        if ($phpType = ($this->map[$tag][$name] ?? null)) {
-            return $phpType;
-        }
-
-        return $this->aliases[$tag][$name] ?? $this->getNameMappingStrategy($tag)->toPhpType($name);
+        return $this->map[$tag][$name] ?? $this->getNameMappingStrategy($tag)->toPhpType($name);
     }
 
     /**
@@ -45,11 +41,7 @@ class DefaultNameMap implements NameMap
      */
     public function fromPhpType(string $phpType, string $tag = self::TAG_DEFAULT): string
     {
-        if ($name = ($this->aliases[$tag][$phpType] ?? null)) {
-            return $name;
-        }
-
-        return $this->map[$tag][$phpType] ?? $this->getNameMappingStrategy($tag)->fromPhpType($phpType);
+        return $this->aliases[$tag][$phpType] ?? $this->getNameMappingStrategy($tag)->fromPhpType($phpType);
     }
 
     /**
