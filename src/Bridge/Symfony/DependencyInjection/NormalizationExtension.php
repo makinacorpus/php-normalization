@@ -6,6 +6,7 @@ namespace MakinaCorpus\Normalization\Bridge\Symfony\DependencyInjection;
 
 use Ramsey\Uuid\UuidInterface;
 use Symfony\Component\Config\FileLocator;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
@@ -26,6 +27,10 @@ final class NormalizationExtension extends Extension
 
         $loader->load('normalization.yaml');
         $this->processNormalization($container, $config);
+
+        if (\class_exists(Command::class)) {
+            $loader->load('console.yaml');
+        }
 
         if (\interface_exists(UuidInterface::class)) {
             $loader->load('normalization.ramsey_uuid.yaml');

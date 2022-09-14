@@ -1,0 +1,7 @@
+services:
+
+    normalization.console.name:
+        public: false
+        class: MakinaCorpus\Normalization\Bridge\Symfony\Command\NameCommand
+        arguments: ["@normalization.name_map"]
+        tags: ['console.command']
