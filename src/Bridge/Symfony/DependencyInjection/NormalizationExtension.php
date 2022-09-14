@@ -62,7 +62,7 @@ final class NormalizationExtension extends Extension
     private function processNormalization(ContainerBuilder $container, array $config): void
     {
         $container->getDefinition('normalization.name_map.strategy.prefix')->setArguments([
-            $config['default_strategy']['app_name'] ?? 'App',
+            $config['default_strategy']['app_name'] ?? null,
             $config['default_strategy']['class_prefix'] ?? 'App',
         ]);
 

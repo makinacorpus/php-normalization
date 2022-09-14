@@ -21,7 +21,7 @@ final class NormalizationConfiguration implements ConfigurationInterface
             ->children()
                 ->arrayNode('default_strategy')
                     ->children()
-                        ->scalarNode('app_name')->defaultValue('App')->end()
+                        ->scalarNode('app_name')->defaultValue(null)->end()
                         ->scalarNode('class_prefix')->defaultValue('App')->end()
                     ->end()
                 ->end()

@@ -38,11 +38,11 @@ use MakinaCorpus\Normalization\NameMappingStrategy;
  */
 class PrefixNameMappingStrategy implements NameMappingStrategy
 {
-    private string $appName;
+    private ?string $appName;
     private string $prefix;
     private int $prefixLength;
 
-    public function __construct(string $appName, string $classPrefix)
+    public function __construct(?string $appName, string $classPrefix)
     {
         $this->appName = $appName;
         $this->prefix = \trim($classPrefix, '\\') . '\\';
@@ -55,11 +55,16 @@ class PrefixNameMappingStrategy implements NameMappingStrategy
     public function toPhpType(string $name): string
     {
         $pieces = \explode('.', $name);
-        if (\count($pieces) < 2 || $this->appName !== $pieces[0]) {
-            return $name; // Name does not belong to us.
+
+        if ($this->appName) {
+            if (\count($pieces) < 2 || ($this->appName && $this->appName !== $pieces[0])) {
+                return $name; // Name does not belong to us.
+            }
+
+            return $this->prefix . \implode('\\', \array_slice($pieces, 1));
         }
 
-        return $this->prefix . \implode('\\', \array_slice($pieces, 1));
+        return $this->prefix . \implode('\\', $pieces);
     }
 
     /**
@@ -73,6 +78,6 @@ class PrefixNameMappingStrategy implements NameMappingStrategy
             return $phpType;
         }
 
-        return $this->appName . '.' . \str_replace('\\', '.', \substr($phpType, $this->prefixLength));
+        return ($this->appName ? $this->appName . '.' : '') . \str_replace('\\', '.', \substr($phpType, $this->prefixLength));
     }
 }
