@@ -63,14 +63,6 @@ final class DefaultNameMapTest extends TestCase
         );
     }
 
-    public function testTypeToNameReturnSameValueIfAlreadyAnAlias(): void
-    {
-        self::assertSame(
-            'mock_message_2',
-            $this->map->fromPhpType('mock_message_2', NameMap::TAG_COMMAND)
-        );
-    }
-
     public function testTypeToNameReturnStrategyIfNoAlias(): void
     {
         self::assertSame(

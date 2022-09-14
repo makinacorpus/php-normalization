@@ -66,5 +66,8 @@ final class KernelConfigurationTest extends TestCase
         // self::assertTrue($container->hasDefinition('preferences.env_var_processor'));
 
         $container->compile();
+
+        // If we explicitely expect no assertion, coverage is disabled.
+        self::assertTrue(true);
     }
 }
