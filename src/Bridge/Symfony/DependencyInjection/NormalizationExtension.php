@@ -85,8 +85,30 @@ final class NormalizationExtension extends Extension
     private function processNormalizationStaticForContext(ContainerBuilder $container, string $tag, array $map, array $aliases): void
     {
         $types = [];
+
+        // Current expected map array uses class names as keys
+        // and aliases as values. But older projects done it reverse.
+        // Detect this in the first row, and treat it as reversed for
+        // all other then for backward compatibility.
+        $isReversed = false;
+
+        foreach ($map as $type => $key) {
+            // Inversion detection.
+            $a = $this->normalizeType($type, $key);
+            $b = $this->normalizeType($key, $type);
+            if (\class_exists($b) && !\class_exists($a)) {
+                $isReversed = true;
+            }
+        }
+
+        if ($isReversed) {
+            \trigger_error(\sprintf("Warning, the 'normalization.static.%s.map' is inversed, keys should be class names and values should be names.", $tag), E_USER_DEPRECATED);
+            $map = \array_flip($map);
+        }
+
         foreach ($map as $type => $key) {
             $type = $this->normalizeType($type, $key);
+
             if ('string' !== $type && 'array' !== $type && 'null' !== $type && !\class_exists($type)) {
                 throw new InvalidArgumentException(\sprintf(
                     "normalization.map: key '%s': class '%s' does not exist",
