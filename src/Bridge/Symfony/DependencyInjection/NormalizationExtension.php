@@ -80,7 +80,7 @@ final class NormalizationExtension extends Extension
     private function processNormalizationStaticForContext(ContainerBuilder $container, string $tag, array $map, array $aliases): void
     {
         $types = [];
-        foreach ($map as $key => $type) {
+        foreach ($map as $type => $key) {
             $type = $this->normalizeType($type, $key);
             if ('string' !== $type && 'array' !== $type && 'null' !== $type && !\class_exists($type)) {
                 throw new InvalidArgumentException(\sprintf(
