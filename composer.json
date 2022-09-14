@@ -34,7 +34,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Goat\\Normalization\\Tests\\": "tests/"
+            "MakinaCorpus\\Normalization\\Tests\\": "tests/"
         }
     },
     "require" : {
