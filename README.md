@@ -8,6 +8,118 @@ whose goal is to be put in front of any component that exposes PHP class name
 to the outside world, in order to be able to alias your internal type names
 to business domain names.
 
+# Tagging
+
+Each name conversion entry is associated to an arbitrary tag which purpose is
+to deambiguate logical names among contextes, for example consider your have
+those two classes:
+
+ - `\App\Entity\Order` logically aliased as `my_app.order`
+ - `\App\Command\Order` logically aliased as `my_app.order`
+
+You then have a name conflict. In order to solve this it is possible to tag
+each class the following way:
+
+ - `\App\Entity\Order` logically aliased as `my_app.order` with `entity` tag,
+ - `\App\Command\Order` logically aliased as `my_app.order` with `command` tag.
+
+When converting from aliased name to PHP class name, you may specify the
+expected tag in the current context, and thus avoid those ambiguities.
+
+While querying for a PHP name class using a logical name:
+
+ - if there is a single entry matching no matter which tag is used, then
+   this entry is returned,
+ - if there is a `default` tagged entry if found, return it,
+ - if there is more than one matching and no `default` tagged entry, then
+   an exception is raised.
+
+A PHP class may be used for more than one logical name, so the following will
+apply while querying for a logical name using a PHP class name:
+
+ - if there is a single entry matching, no matter which tag is used, then
+   this entry is returned,
+ - if there is a `default` tagged entry if found, return it,
+ - if there is more than one matching and no `default` tagged entry, then
+   an exception is raised.
+
+Both resolution algorithms to and from a PHP class name behave the same.
+
+# Static naming strategies
+
+## Using attributes
+
+You may simply give a default name to one class.
+
+```php
+namespace App\Entity;
+
+#[\MakinaCorpus\Normalization\DomainAlias(name: "foo")]
+class Foo
+{
+}
+```
+
+Or target some context using tags:
+
+```php
+namespace App\Command;
+
+#[\MakinaCorpus\Normalization\DomainAlias(name: "do_foo", tag: "command")]
+class Foo
+{
+}
+```
+
+Or if you wish, give more than one name in different contextes:
+
+```php
+namespace App\Command;
+
+#[\MakinaCorpus\Normalization\DomainAlias(name: "foo")]
+#[\MakinaCorpus\Normalization\DomainAlias(name: "do_foo", tag: "command")]
+#[\MakinaCorpus\Normalization\DomainAlias(name: "foo_done", tag: "event")]
+class Foo
+{
+}
+```
+
+You also can provide as many aliases in the same tag or under the default
+tag as you wish, for example when you rename business items and wish to keep
+a backward compatibility:
+
+```php
+namespace App\Command;
+
+#[\MakinaCorpus\Normalization\DomainAlias(name: "do_foo", tag: "command")]
+#[\MakinaCorpus\Normalization\DomainAlias(name: "older_legacy_name", tag: "command", deprecated: true)]
+class Foo
+{
+}
+```
+
+You can also simply give a priority (result will be same as using the
+`deprecated` argument) but without raising any deprecation notices on the
+PHP side:
+
+```php
+namespace App\Command;
+
+#[\MakinaCorpus\Normalization\DomainAlias(name: "do_foo", tag: "command", priority: 100)]
+#[\MakinaCorpus\Normalization\DomainAlias(name: "older_legacy_name", tag: "command", priority: -100)]
+class Foo
+{
+}
+```
+
+The previously explained algorithm will work using all those parameters.
+
+## Using Symfony configuration
+
+@todo
+
+# Dynamic naming stategies
+
 This provides three different class naming strategies:
 
  - *Passthrough* name conversion which doesn't convert anything. Exposed names

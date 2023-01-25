@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace MakinaCorpus\Normalization\Tests;
+namespace MakinaCorpus\Normalization\Tests\NameMap;
 
 use MakinaCorpus\Normalization\NameMap\PrefixNameMappingStrategy;
 use PHPUnit\Framework\TestCase;

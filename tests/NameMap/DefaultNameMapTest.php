@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace MakinaCorpus\Normalization\Tests;
+namespace MakinaCorpus\Normalization\Tests\NameMap;
 
 use MakinaCorpus\Normalization\NameMap;
 use MakinaCorpus\Normalization\NameMappingStrategy;
+use MakinaCorpus\Normalization\NameMap\ArrayNameMap;
 use MakinaCorpus\Normalization\NameMap\DefaultNameMap;
 use MakinaCorpus\Normalization\Tests\Mock\MockMessage1;
 use MakinaCorpus\Normalization\Tests\Mock\MockMessage2;
@@ -14,24 +15,29 @@ use PHPUnit\Framework\TestCase;
 
 final class DefaultNameMapTest extends TestCase
 {
-    private $map;
+    private ?NameMap $map = null;
 
     protected function setUp(): void
     {
         $this->map = new DefaultNameMap();
         $this->map->setStaticNameMap(
-            [
-                MockMessage2::class => 'mock_message_2',
-                MockMessage3::class => 'mock_message_3',
-                'NonExistingClass' => 'non_existing_class',
-            ],
-            [
-                'mock_2' => MockMessage2::class,
-                'mock_2_2' => MockMessage2::class,
-                'mock_3' => 'mock_message_3',
-            ],
-            NameMap::TAG_COMMAND
+            new ArrayNameMap(
+                [
+                    'mock_2' => [NameMap::TAG_COMMAND => MockMessage2::class],
+                    'mock_2_2' => [NameMap::TAG_COMMAND => MockMessage2::class],
+                    'mock_3' => [NameMap::TAG_COMMAND => 'mock_message_3'],
+                    'mock_message_2' => [NameMap::TAG_COMMAND => MockMessage2::class],
+                    'mock_message_3' => [NameMap::TAG_COMMAND => MockMessage3::class],
+                    'non_existing_class' => [NameMap::TAG_COMMAND => 'NonExistingClass'],
+                ],
+                [
+                    'NonExistingClass' => [NameMap::TAG_COMMAND => 'non_existing_class'],
+                    MockMessage2::class => [NameMap::TAG_COMMAND => 'mock_message_2'],
+                    MockMessage3::class => [NameMap::TAG_COMMAND => 'mock_message_3'],
+                ],
+            ),
         );
+
         $this->map->setNameMappingStrategy(
             new class () implements NameMappingStrategy
             {

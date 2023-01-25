@@ -14,50 +14,45 @@ use MakinaCorpus\Normalization\NameMappingStrategy;
  */
 class DefaultNameMap implements NameMap
 {
+    private ?NameMap $staticNameMap = null;
     private NameMappingStrategy $defaultStrategy;
     /** @var array<string,NameMappingStrategy> */
     private array $strategies = [];
 
-    /** @var array<string,array<string,string>> */
-    private array $map = [];
-    /** @var array<string,array<string,string>> */
-    private array $aliases = [];
-
-    public function __construct(?NameMappingStrategy $defaultStrategy = null)
+    public function __construct(?NameMappingStrategy $defaultStrategy = null, ?NameMap $staticNameMap = null)
     {
         $this->defaultStrategy = $defaultStrategy ?? new PassthroughNameMappingStrategy();
+        $this->staticNameMap = $staticNameMap;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function toPhpType(string $name, string $tag = self::TAG_DEFAULT): string
+    public function toPhpType(string $name, ?string $tag = null): string
     {
-        return $this->aliases[$tag][$name] ?? $this->getNameMappingStrategy($tag)->toPhpType($name);
+        if ($this->staticNameMap && ($ret = $this->staticNameMap->toPhpType($name)) && $ret !== $name) {
+            return $ret;
+        }
+        return $this->getNameMappingStrategy($tag)->toPhpType($name);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function fromPhpType(string $phpType, string $tag = self::TAG_DEFAULT): string
+    public function fromPhpType(string $phpType, ?string $tag = null): string
     {
-        return $this->map[$tag][$phpType] ?? $this->getNameMappingStrategy($tag)->fromPhpType($phpType);
+        if ($this->staticNameMap && ($ret = $this->staticNameMap->fromPhpType($phpType, $tag)) && $ret !== $phpType) {
+            return $ret;
+        }
+        return $this->getNameMappingStrategy($tag)->fromPhpType($phpType);
     }
 
     /**
-     * Set static name map for a given tag.
-     *
-     * @param array<string,string> $map
-     *   Keys are PHP type names, values are aliases. Converts PHP type names
-     *   to their actual names.
-     * @param array<string,string> $aliases
-     *   Keys are aliases, values are PHP type names. Converts possibly obsolete
-     *   aliases to the real PHP type name. 
+     * Set static name map.
      */
-    public function setStaticNameMap(array $map, array $aliases = [], string $tag = self::TAG_DEFAULT): void
+    public function setStaticNameMap(NameMap $staticNameMap): void
     {
-        $this->map[$tag] = $map;
-        $this->aliases[$tag] = \array_flip($map) + $aliases;
+        $this->staticNameMap = $staticNameMap;
     }
 
     /**

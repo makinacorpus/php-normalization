@@ -16,10 +16,17 @@ services:
     normalization.name_map.strategy.default:
         alias: normalization.name_map.strategy.prefix
 
+    normalization.name_map.static:
+        public: false
+        class: MakinaCorpus\Normalization\NameMap\ArrayNameMap
+        arguments: [[], []]
+
     normalization.name_map:
         public: false
         class: MakinaCorpus\Normalization\NameMap\DefaultNameMap
         arguments: ['@normalization.name_map.strategy.default']
+        calls:
+            - [setStaticNameMap, ["@normalization.name_map.static"]]
 
     MakinaCorpus\Normalization\NameMap:
         public: false

@@ -20,7 +20,7 @@ interface NameMap
      * @param string $tag
      *   Arbitrary string which tells in which context we are forging the name.
      */
-    public function toPhpType(string $name, string $tag = self::TAG_DEFAULT): string;
+    public function toPhpType(string $name, ?string $tag = null): string;
 
     /**
      * From PHP type name, return corresponding business domain name.
@@ -28,5 +28,5 @@ interface NameMap
      * @param string $tag
      *   Arbitrary string which tells in which context we are forging the name.
      */
-    public function fromPhpType(string $phpType, string $tag = self::TAG_DEFAULT): string;
+    public function fromPhpType(string $phpType, ?string $tag = null): string;
 }
