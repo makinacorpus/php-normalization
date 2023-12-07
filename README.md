@@ -54,7 +54,9 @@ You may simply give a default name to one class.
 ```php
 namespace App\Entity;
 
-#[\MakinaCorpus\Normalization\DomainAlias(name: "foo")]
+use MakinaCorpus\Normalization\Alias;
+
+#[Alias(name: "foo")]
 class Foo
 {
 }
@@ -65,7 +67,9 @@ Or target some context using tags:
 ```php
 namespace App\Command;
 
-#[\MakinaCorpus\Normalization\DomainAlias(name: "do_foo", tag: "command")]
+use MakinaCorpus\Normalization\Alias;
+
+#[Alias(name: "do_foo", tag: "command")]
 class Foo
 {
 }
@@ -76,9 +80,11 @@ Or if you wish, give more than one name in different contextes:
 ```php
 namespace App\Command;
 
-#[\MakinaCorpus\Normalization\DomainAlias(name: "foo")]
-#[\MakinaCorpus\Normalization\DomainAlias(name: "do_foo", tag: "command")]
-#[\MakinaCorpus\Normalization\DomainAlias(name: "foo_done", tag: "event")]
+use MakinaCorpus\Normalization\Alias;
+
+#[Alias(name: "foo")]
+#[Alias(name: "do_foo", tag: "command")]
+#[Alias(name: "foo_done", tag: "event")]
 class Foo
 {
 }
@@ -91,8 +97,10 @@ a backward compatibility:
 ```php
 namespace App\Command;
 
-#[\MakinaCorpus\Normalization\DomainAlias(name: "do_foo", tag: "command")]
-#[\MakinaCorpus\Normalization\DomainAlias(name: "older_legacy_name", tag: "command", deprecated: true)]
+use MakinaCorpus\Normalization\Alias;
+
+#[Alias(name: "do_foo", tag: "command")]
+#[Alias(name: "older_legacy_name", tag: "command", deprecated: true)]
 class Foo
 {
 }
@@ -105,8 +113,10 @@ PHP side:
 ```php
 namespace App\Command;
 
-#[\MakinaCorpus\Normalization\DomainAlias(name: "do_foo", tag: "command", priority: 100)]
-#[\MakinaCorpus\Normalization\DomainAlias(name: "older_legacy_name", tag: "command", priority: -100)]
+use MakinaCorpus\Normalization\Alias;
+
+#[Alias(name: "do_foo", tag: "command", priority: 100)]
+#[Alias(name: "older_legacy_name", tag: "command", priority: -100)]
 class Foo
 {
 }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MakinaCorpus\Normalization\Builder;
 
+use MakinaCorpus\Normalization\Alias;
 use MakinaCorpus\Normalization\DomainAlias;
 
 /**
@@ -68,7 +69,7 @@ class NameMapBuilder
     /**
      * Add a single class alias entry using an attribute.
      */
-    public function addAttribute(string $phpType, DomainAlias $attribute): void
+    public function addAttribute(string $phpType, Alias $attribute): void
     {
         $this->add($phpType, $attribute->getName(), $attribute->getTag(), $attribute->getPriority(), $attribute->isDeprecated());
     }
@@ -83,6 +84,9 @@ class NameMapBuilder
         }
 
         $refClass = new \ReflectionClass($phpType);
+        foreach ($refClass->getAttributes(Alias::class) as $refAttr) {
+            $this->addAttribute($phpType, $refAttr->newInstance());
+        }
         foreach ($refClass->getAttributes(DomainAlias::class) as $refAttr) {
             $this->addAttribute($phpType, $refAttr->newInstance());
         }

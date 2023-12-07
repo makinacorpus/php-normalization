@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace MakinaCorpus\Normalization\Bridge\Symfony\DependencyInjection;
 
-use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
+use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 
 final class NormalizationConfiguration implements ConfigurationInterface
 {
     /**
      * {@inheritdoc}
      */
-    public function getConfigTreeBuilder()
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder('normalization');
         $rootNode = $treeBuilder->getRootNode();

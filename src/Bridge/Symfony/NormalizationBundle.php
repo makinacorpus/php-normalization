@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace MakinaCorpus\Normalization\Bridge\Symfony;
 
+use MakinaCorpus\Normalization\Alias;
 use MakinaCorpus\Normalization\DomainAlias;
 use MakinaCorpus\Normalization\Bridge\Symfony\DependencyInjection\NormalizationExtension;
 use MakinaCorpus\Normalization\Bridge\Symfony\DependencyInjection\Compiler\RegisterStaticNameMapPass;
@@ -23,6 +24,17 @@ final class NormalizationBundle extends Bundle
     public function build(ContainerBuilder $container)
     {
         $container->addCompilerPass(new RegisterStaticNameMapPass());
+
+        $container->registerAttributeForAutoconfiguration(
+            Alias::class,
+            static function (
+                ChildDefinition $definition,
+                Alias $attribute
+                /* \ReflectionClass|\ReflectionMethod $reflector */
+            ): void {
+                $definition->addTag('normalization.aliased');
+            }
+        );
 
         $container->registerAttributeForAutoconfiguration(
             DomainAlias::class,

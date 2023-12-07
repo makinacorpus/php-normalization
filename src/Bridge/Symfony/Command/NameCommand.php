@@ -10,35 +10,24 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Attribute\AsCommand;
 
 /**
  * @codeCoverageIgnore
  */
+#[AsCommand(name: 'normalization:name', description: 'Name things')]
 final class NameCommand extends Command
 {
-    /**
-     * {@inheritdoc}
-     */
-    protected static $defaultName = 'normalization:name';
-
-    /**
-     * {@inheritdoc}
-     */
-    protected static $defaultDescription = 'Name things.';
-
-    private NameMap $nameMap;
-
-    public function __construct(NameMap $nameMap)
-    {
+    public function __construct(
+        private NameMap $nameMap
+    ) {
         parent::__construct();
-
-        $this->nameMap = $nameMap;
     }
 
     /**
      * {@inheritdoc}
      */
-    protected function configure()
+    protected function configure(): void
     {
         $this->addArgument('target', InputArgument::OPTIONAL, "If 'list', then list all, otherwise this must be a class PHP name or logical name.");
         $this->addOption('tag', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, "Search in the given tag.");
@@ -47,7 +36,7 @@ final class NameCommand extends Command
     /**
      * {@inheritdoc}
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $tags = (array) $input->getOption('tag');
         if (!$tags) {
@@ -76,6 +65,6 @@ final class NameCommand extends Command
                 break;
         }
 
-        return 0;
+        return self::SUCCESS;
     }
 }
