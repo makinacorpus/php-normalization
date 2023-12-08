@@ -1,5 +1,11 @@
 services:
 
+    normalization.console.list:
+        public: false
+        class: MakinaCorpus\Normalization\Bridge\Symfony\Command\ListCommand
+        arguments: ["@normalization.name_map.static"]
+        tags: ['console.command']
+
     normalization.console.name:
         public: false
         class: MakinaCorpus\Normalization\Bridge\Symfony\Command\NameCommand

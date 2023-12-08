@@ -32,6 +32,10 @@ services:
         public: false
         alias: normalization.name_map
 
+    MakinaCorpus\Normalization\NameMapList:
+        public: false
+        alias: normalization.name_map.static
+
     MakinaCorpus\Normalization\Serializer:
         public: false
         alias: normalization.serializer

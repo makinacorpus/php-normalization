@@ -24,18 +24,14 @@ final class NameCommand extends Command
         parent::__construct();
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     protected function configure(): void
     {
-        $this->addArgument('target', InputArgument::OPTIONAL, "If 'list', then list all, otherwise this must be a class PHP name or logical name.");
+        $this->addArgument('target', InputArgument::OPTIONAL, "A PHP class name or an alias.");
         $this->addOption('tag', null, InputOption::VALUE_IS_ARRAY | InputOption::VALUE_REQUIRED, "Search in the given tag.");
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $tags = (array) $input->getOption('tag');
@@ -43,26 +39,20 @@ final class NameCommand extends Command
             $tags = [NameMap::TAG_DEFAULT];
         }
 
-        switch ($name = $input->getArgument('target')) {
+        $name = $input->getArgument('target');
 
-            case 'list':
-                throw new \RuntimeException("Not implemented yet.");
-
-            default:
-                foreach ($tags as $tag) {
-                    $candidate = $this->nameMap->fromPhpType($name, $tag);
-                    if ($name === $candidate) {
-                        $candidate = $this->nameMap->toPhpType($name, $tag);
-                        if ($candidate === $name) {
-                            $output->writeln(\sprintf("[%s] Could not find PHP class name or alias: '%s'", $tag, $name));
-                        } else {
-                            $output->writeln(\sprintf("[%s] %s -> %s", $tag, $candidate, $name));
-                        }
-                    } else {
-                        $output->writeln(\sprintf("[%s] %s -> %s", $tag, $name, $candidate));
-                    }
+        foreach ($tags as $tag) {
+            $candidate = $this->nameMap->fromPhpType($name, $tag);
+            if ($name === $candidate) {
+                $candidate = $this->nameMap->toPhpType($name, $tag);
+                if ($candidate === $name) {
+                    $output->writeln(\sprintf("[%s] Could not find PHP class name or alias: '%s'", $tag, $name));
+                } else {
+                    $output->writeln(\sprintf("[%s] %s -> %s", $tag, $candidate, $name));
                 }
-                break;
+            } else {
+                $output->writeln(\sprintf("[%s] %s -> %s", $tag, $name, $candidate));
+            }
         }
 
         return self::SUCCESS;

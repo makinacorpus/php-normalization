@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace MakinaCorpus\Normalization\NameMap;
 
 use MakinaCorpus\Normalization\NameMap;
+use MakinaCorpus\Normalization\NameMapList;
 
 /**
  * Array based static name map.
  */
-class ArrayNameMap implements NameMap
+class ArrayNameMap implements NameMap, NameMapList
 {
     /** @var array<string,array<string,string>> */
     private array $logicalToPhp = [];
@@ -28,9 +29,48 @@ class ArrayNameMap implements NameMap
         $this->phpToLogical = $phpToLogical;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
+    public function listTags(): array
+    {
+        $ret = [NameMap::TAG_DEFAULT];
+        foreach ($this->logicalToPhp as $phpTypes) {
+            $ret += \array_keys($phpTypes);
+        }
+        foreach ($this->phpToLogical as $aliases) {
+            $ret += \array_keys($aliases);
+        }
+        return \array_unique($ret);
+    }
+
+    #[\Override]
+    public function listAliases(string $tag = NameMap::TAG_DEFAULT): array
+    {
+        $ret = [];
+        foreach ($this->logicalToPhp as $alias => $phpTypes) {
+            foreach ($phpTypes as $localTag => $phpType) {
+                if ($localTag === $tag) {
+                    $ret[$alias] = $phpType;
+                }
+            }
+        }
+        return $ret;
+    }
+
+    #[\Override]
+    public function listPhpTypes(string $tag = NameMap::TAG_DEFAULT): array
+    {
+        $ret = [];
+        foreach ($this->phpToLogical as $phpType => $aliases) {
+            foreach ($aliases as $localTag => $alias) {
+                if ($localTag === $tag) {
+                    $ret[$phpType] = $alias;
+                }
+            }
+        }
+        return $ret;
+    }
+
+    #[\Override]
     public function toPhpType(string $name, ?string $tag = null): string
     {
         if ($values = ($this->logicalToPhp[$name] ?? null)) {
@@ -47,9 +87,7 @@ class ArrayNameMap implements NameMap
         return $name;
     }
 
-    /**
-     * {@inheritdoc}
-     */
+    #[\Override]
     public function fromPhpType(string $phpType, ?string $tag = null): string
     {
         if ($values = ($this->phpToLogical[$phpType] ?? null)) {
